@@ -81,7 +81,8 @@
 
 <div class="flex-col">
 	<h1>Smack That Button!</h1>
-	<p>1 in 10 win 20 TAU per smack</p>
+	<p>20 TAU per smack.</p>
+	<p>1 in 20 chance to win!</p>
 	<p>100% community driven. 0% house edge.</p>
 	<BigRedButton on:click={handleClick} />
 </div>
