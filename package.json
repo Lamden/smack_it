@@ -1,7 +1,7 @@
 {
-  "name": "TODO",
-  "description": "TODO",
-  "version": "0.0.1",
+  "name": "Smack_That",
+  "description": "A classic game of smack and win on the Lamden Blockchain.",
+  "version": "0.0.2",
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build --legacy",
@@ -11,7 +11,7 @@
   "dependencies": {
     "compression": "^1.7.1",
     "lamden-js": "^1.21.0",
-    "lamden_wallet_controller": "^0.5.0",
+    "lamden_wallet_controller": "^0.6.0",
     "polka": "next",
     "sirv": "^1.0.0",
     "svelte-spinkit": "^1.0.3"

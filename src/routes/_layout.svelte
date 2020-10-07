@@ -18,6 +18,7 @@
 
 	let lwc;
 	let stampLimits = {}
+	let errors = []
 
 	setContext('app_functions', {
 		sendTransaction,
@@ -47,7 +48,6 @@
 	})
 
 	const handleWalletInfo = (info) => {
-		console.log(info)
 		autoTx.set(lwc.autoTransactions)
 		userAccount.set(lwc.walletAddress)
 		walletInfo.set(info)
@@ -78,11 +78,13 @@
 		})
 	}
 
-	const handleTxResults = (results) => {/*
-		let errors = processTxResults(results)
-		if (errors.length > 0) {
-			if (errors[0].includes('have not been approved for')) lwc.sendConnection(approvalRequest, true)
-		}*/
+	const handleTxResults = (detail) => {
+		let txResults = detail.data
+		if (txResults.errors){
+			if (txResults.errors.length > 0) errors = txResults.errors
+		}else{
+			errors = [];
+		}
 	}
 
 	function sendTransaction (transaction, callback){
@@ -99,6 +101,10 @@
 		padding: 2em;
 		margin: 0 auto;
 	}
+	p{
+		color: red;
+		text-align: center;
+	}
 </style>
 
 <Nav {lwc} {segment}/>
@@ -106,5 +112,8 @@
 <main>
 	<slot></slot>
 </main>
+{#each errors as error}
+	<p>{error}</p>
+{/each}
 
 {#if $showModal.show}<Modal />{/if}

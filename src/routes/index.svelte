@@ -7,6 +7,7 @@
 	import { showModal, sending, currency, approvalAmount  } from '../js/stores.js'
 	import { checkForApproval, closeModal } from '../js/utils.js'
 	import { config } from '../js/config.js'
+	import { approvalRequest } from '../js/wallet_connection';
 
 	const { sendTransaction, userHasFunds, lwc } = getContext('app_functions')
 	let win, lose
@@ -29,26 +30,28 @@
 		if (message === messageDefault){
 			const transaction = {
 				methodName: 'smack',
-				networkType: 'testnet',
+				networkType: approvalRequest.networkType,
 				kwargs: {}
 			}
 			sendTransaction(transaction, handleSmack)
 		}
 	}
 
-	const handleSmack = async (txResults) => {
+	const handleSmack = async (detail) => {
+		let txResults = detail.data
 		sending.update(value => value - 1)
-        if (txResults.txBlockResult.status === 0) {
-			if(txResults.txBlockResult.result === "None") {
-				setButtonMessage('NOPE', 3000)
-				play('lose')
-			}
-			else {
-				setButtonMessage(`WINNER!<br />${txResults.txBlockResult.result} TAU`, 7300)
-				play('win')
+		if (!txResults.errors){
+			if (txResults.txBlockResult.status === 0) {
+				if(txResults.txBlockResult.result === "None") {
+					setButtonMessage('NOPE', 3000)
+					play('lose')
+				}
+				else {
+					setButtonMessage(`WINNER!<br />${txResults.txBlockResult.result} TAU`, 7300)
+					play('win')
+				}
 			}
 		}
-		console.log("calling get info")
 		setTimeout(lwc().getInfo, 1000)
 	}
 

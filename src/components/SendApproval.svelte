@@ -3,6 +3,7 @@
 	import { showModal, sending  } from '../js/stores.js'
 	import { checkForApproval, closeModal } from '../js/utils.js'
 	import { config } from '../js/config.js'
+	import { approvalRequest } from '../js/wallet_connection';
 
     const { sendTransaction } = getContext('app_functions')
 
@@ -12,6 +13,7 @@
 		const transaction = {
 			contractName: 'currency',
 			methodName: 'approve',
+			networkType: approvalRequest.networkType,
 			networkType: 'testnet',
 			kwargs: {
                 amount: parseFloat(amount),
@@ -21,13 +23,16 @@
 		sendTransaction(transaction, handleApproveTx)
 	}
 
-	const handleApproveTx = async (txResults) => {
+	const handleApproveTx = async (detail) => {
+		let txResults = detail.data
 		sending.update(value => value - 1)
-        if (txResults.txBlockResult.status === 0) {
-        	await checkForApproval().then((value) => {
-                if (value >= 10) closeModal()
-            })
-        }
+		if (!txResults.errors){
+			if (txResults.txBlockResult.status === 0) {
+				await checkForApproval().then((value) => {
+					if (value >= 10) closeModal()
+				})
+			}
+		}
     }
 
 </script>
