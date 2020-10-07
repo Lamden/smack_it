@@ -14,7 +14,6 @@
 			contractName: 'currency',
 			methodName: 'approve',
 			networkType: approvalRequest.networkType,
-			networkType: 'testnet',
 			kwargs: {
                 amount: parseFloat(amount),
                 to: config.smartcontact
