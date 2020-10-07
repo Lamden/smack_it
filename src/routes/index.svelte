@@ -171,16 +171,16 @@
 	<meta name="twitter:description" content="Smack and Win!" />
 	<meta name="twitter:site" content="@lamdentau" />
 	<meta name="twitter:creator" content="www.lamden.io" />
-	<meta name="twitter:image" content="logo-192.png" />
-	<meta name="twitter:image:alt" content="logo-192.png" />
+	<meta name="twitter:image" content="https://smackthat.lamden.io/logo-192.png" />
+	<meta name="twitter:image:alt" content="https://smackthat.lamden.io/logo-192.png" />
 
 	<meta property="og:url" content="https://smackthat.lamden.io" />
 	<meta property="og:type" content="article" />
 	<meta property="og:title" content="Smack That!" />
-	<meta property="og:image" content="logo-192.png" />
+	<meta property="og:image" content="https://smackthat.lamden.io/logo-192.png" />
 	<meta property="og:description" content="Smack and Win!" />
-	<meta property="og:image:url" content="logo-192.png" />
-	<meta property="og:image:secure_url" content="logo-192.png" />
+	<meta property="og:image:url" content="https://smackthat.lamden.io/logo-192.png" />
+	<meta property="og:image:secure_url" content="https://smackthat.lamden.io/logo-192.png" />
 	<meta property="og:image:width" content="192" />
 	<meta property="og:image:height" content="192" />
 	<meta property="og:image:type" content="image/png" />
