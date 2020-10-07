@@ -88,7 +88,7 @@
 	}
 
 	function sendTransaction (transaction, callback){
-		transaction.stampLimit = stampLimits[transaction.methodName].max
+		transaction.stampLimit = stampLimits[transaction.methodName].max + 5
 		sending.update(value => value + 1)
 		lwc.sendTransaction(transaction, callback)
 	}

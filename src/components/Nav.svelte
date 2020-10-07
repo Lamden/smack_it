@@ -16,6 +16,10 @@
 		padding: 1rem 1rem;
 	}
 
+	.mobile{
+		display: none;
+	}
+
 	.flex-col{
 		align-items: flex-end;
 	}
@@ -43,9 +47,15 @@
 	.approval-good{
 		color: rgb(192, 192, 192);
 	}
+
+	@media (min-width: 480px) {
+		.mobile{
+			display: flex;
+		}
+	}
 </style>
 
-<nav class="flex-col">
+<nav class="flex-col mobile">
 	{#if lwc}
 		{#if $userAccount && !$walletInfo.locked} 
 			<p 	class="account">
