@@ -3,12 +3,12 @@ import { config } from './config.js'
 
 const approvalRequest = {
     appName: 'Smack That!',
-    version: '0.0.2',
+    version: '0.0.1',
     contractName: config.smartcontact,
-    networkType: 'testnet'
+    networkType: 'mainnet'
 }
 
 approvalRequest.logo = 'logo-192.png'
-approvalRequest.background = 'wallet/background.png'
+approvalRequest.background = 'background.png'
 
 export { approvalRequest };

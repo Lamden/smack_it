@@ -1,8 +1,8 @@
 export const config = {
-    smartcontact: 'con_smackthat_2',
-    currencySymbol: "dTAU",
-    blockExplorer: "https://testnet.lamden.io",
-    masternodes: ["https://testnet-master-1.lamden.io"],
+    smartcontact: 'con_smack_that',
+    currencySymbol: "TAU",
+    blockExplorer: "https://mainnet.lamden.io",
+    masternodes: ["http://masternode-01.lamden.io", "http://masternode-02.lamden.io"],
     cost: 10,
     txFee: 1
 }

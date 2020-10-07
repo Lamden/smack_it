@@ -66,7 +66,7 @@
 		userHasFunds().then(res => {
 			if (res)  smack()
 			else {
-				setButtonMessage("YOU'RE<br />BROKE", 2000)
+				setButtonMessage("NO FUNDS", 2000)
 				play("broke")
 			}
 		})

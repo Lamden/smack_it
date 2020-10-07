@@ -12,7 +12,6 @@
     let valueUp = false
 
 	onMount(() => {
-        potWasWon()
 		//refresh current pot amount
 		refreshTimer = setTimeout(updatePot, 0)
 

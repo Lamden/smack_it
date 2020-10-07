@@ -37,7 +37,7 @@
 				})
 
 		// Get stamp costs for the methods we will call
-		fetch(`${config.blockExplorer}/api/stamps/con_smackthat_2/smack`).then(res => res.json()).then(json => stampLimits.smack = json)
+		fetch(`${config.blockExplorer}/api/stamps/${config.smartcontact}/smack`).then(res => res.json()).then(json => stampLimits.smack = json)
 		fetch(`${config.blockExplorer}/api/stamps/currency/approve`).then(res => res.json()).then(json => stampLimits.approve = json)
 
 		return () => {
