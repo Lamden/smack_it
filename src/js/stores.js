@@ -10,3 +10,5 @@ export const snackbars = writable([]);
 export const currency = writable(0);
 export const approvalAmount = writable(0);
 export const showModal = writable({modalData: {}, show: false});
+export const sending = writable(0);
+export const currentPot = writable(0);

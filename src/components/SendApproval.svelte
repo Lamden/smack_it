@@ -1,6 +1,6 @@
 <script>
     import { getContext } from 'svelte'
-	import { showModal  } from '../js/stores.js'
+	import { showModal, sending  } from '../js/stores.js'
 	import { checkForApproval, closeModal } from '../js/utils.js'
 	import { config } from '../js/config.js'
 
@@ -16,13 +16,13 @@
 			kwargs: {
                 amount: parseFloat(amount),
                 to: config.smartcontact
-            },
-            stampLimit: 50
+            }
 		}
 		sendTransaction(transaction, handleApproveTx)
 	}
 
 	const handleApproveTx = async (txResults) => {
+		sending.update(value => value - 1)
         if (txResults.txBlockResult.status === 0) {
         	await checkForApproval().then((value) => {
                 if (value >= 10) closeModal()
@@ -38,13 +38,32 @@
 		justify-content: space-evenly;
 		height: 100%;
 	}
+	p{
+		margin: 0 0 0.5rem;
+	}
+	label{
+		margin-bottom: 0.5rem;
+	}
+	input[type="submit"] {
+		height: 31px;
+		margin-left: 10px;
+	}
+
+	input[type="text"]{
+		text-align: right;
+		width: 145px;
+		padding-right: 10px;
+	}
+
 </style>
 
 <div class="flex-col">
-    <p>We want to play a fun game with you but you need to let us spend your TAU.</p>
+    <p>This game needs permission to spend your {config.currencySymbol}.</p>
 	<form id="approve" class="flex-col" on:submit|preventDefault={approveAmount}>
-		<label for="amount">How much would you like to allow us to spend? </label>
-		<input id="amount" type="text" bind:value={amount}/>
-        <input type="submit" value="Approve TAU" form="approve" />
+		<label for="amount">How much can it spend? </label>
+		<div class="flex-row">
+			<input id="amount" type="text" bind:value={amount}/>
+        	<input type="submit" disabled={$sending > 0} value={`Approve ${config.currencySymbol}`} form="approve" />
+		</div>
 	</form>
 </div>

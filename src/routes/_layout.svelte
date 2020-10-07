@@ -3,7 +3,7 @@
 	import WalletController from 'lamden_wallet_controller';
 
 	//Stores
-	import { walletInstalled, walletInfo, userAccount, autoTx, showModal, approvalAmount, currency } from '../js/stores.js';
+	import { walletInstalled, walletInfo, userAccount, autoTx, showModal, approvalAmount, currency, sending } from '../js/stores.js';
 
 	//Utils
 	import { approvalRequest } from '../js/wallet_connection';
@@ -13,12 +13,11 @@
 	//components
 	import Nav from '../components/Nav.svelte';
 	import Modal from '../components/Modal.svelte'
-	import SendApproval from '../components/SendApproval.svelte'
-	import FundAccount from '../components/FundAccount.svelte'
 
 	export let segment;
 
 	let lwc;
+	let stampLimits = {}
 
 	setContext('app_functions', {
 		sendTransaction,
@@ -28,7 +27,6 @@
 
 	onMount(() => {
 		lwc = new WalletController(approvalRequest)
-		//lwc = new WalletController()
 		lwc.events.on('newInfo', handleWalletInfo)
 		lwc.events.on('txStatus', handleTxResults)
 
@@ -37,6 +35,10 @@
 					if (installed) walletInstalled.set('installed')
 					else walletInstalled.set('not-installed')
 				})
+
+		// Get stamp costs for the methods we will call
+		fetch(`${config.blockExplorer}/api/stamps/con_smackthat_2/smack`).then(res => res.json()).then(json => stampLimits.smack = json)
+		fetch(`${config.blockExplorer}/api/stamps/currency/approve`).then(res => res.json()).then(json => stampLimits.approve = json)
 
 		return () => {
 			lwc.events.removeListener(handleWalletInfo)
@@ -57,16 +59,14 @@
 		return new Promise((resolver) => {
 			if ($userAccount){
 				refreshTAUBalance().then(res => {
-					console.log('taubal: '+ res)
 					if(res < config.cost) {
-						showModal.set({modalData: {modal: FundAccount}, show: true})
+						showModal.set({modalData: {modal: "FundAccount"}, show: true})
 						return resolver(false)
 					}
 					else{
 						checkForApproval().then(res => {
-							console.log('approval: '+ res)
 							if($approvalAmount < config.cost ) {
-								showModal.set({modalData: {modal: SendApproval}, show: true})
+								showModal.set({modalData: {modal: "SendApproval"}, show: true})
 								return resolver(false)
 							}
 							else return resolver(true)
@@ -86,6 +86,8 @@
 	}
 
 	function sendTransaction (transaction, callback){
+		transaction.stampLimit = stampLimits[transaction.methodName].max
+		sending.update(value => value + 1)
 		lwc.sendTransaction(transaction, callback)
 	}
 </script>
@@ -93,11 +95,9 @@
 <style>
 	main {
 		position: relative;
-		max-width: 56em;
-		background-color: white;
+		max-width: 65em;
 		padding: 2em;
 		margin: 0 auto;
-		box-sizing: border-box;
 	}
 </style>
 

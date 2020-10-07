@@ -19,6 +19,10 @@
     background-image: -moz-gradient(linear, left top, left bottom, color-stop(0%, #f74d4d), color-stop(100%, #f86569));
     
     box-shadow: 0 15px #e24f4f;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .bigRedButton:active{
@@ -28,4 +32,6 @@
 }
 </style>
 
-<div class="bigRedButton" on:click={() => dispatch('click')}></div>
+<div class="bigRedButton" on:click={() => dispatch('click')}>
+    <slot></slot>
+</div>

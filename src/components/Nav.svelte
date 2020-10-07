@@ -1,73 +1,65 @@
 <script>
 	import WalletConnectButton from './WalletConnectButton.svelte'
 
-	import { currency, userAccount, approvalAmount } from '../js/stores'
+	import { currency, userAccount, approvalAmount, walletInfo } from '../js/stores'
+	import { config } from '../js/config'
 	
-	export let segment;
 	export let lwc;
+
+	let totalCost = config.cost + config.txFee
 </script>
 
 <style>
 	nav {
 		border-bottom: 1px solid rgba(255,62,0,0.1);
 		font-weight: 300;
-		padding: 0 1em;
+		padding: 1rem 1rem;
 	}
 
-	ul {
-		margin: 0;
-		padding: 0;
+	.flex-col{
+		align-items: flex-end;
 	}
-
-	/* clearfix */
-	ul::after {
-		content: '';
-		display: block;
-		clear: both;
+	.flex-col > p {
+		line-height: 1;
+		margin: 0 0 0.25rem ;
+		text-align: right;
 	}
-
-	li {
-		display: block;
-		float: left;
+	.account{
+		min-width: 200px;
+		max-width: 300px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
-
-	[aria-current] {
-		position: relative;
-		display: inline-block;
+	.currency{
+		font-weight: 400;
 	}
-
-	[aria-current]::after {
-		position: absolute;
-		content: '';
-		width: calc(100% - 1em);
-		height: 2px;
-		background-color: rgb(255,62,0);
-		display: block;
-		bottom: -1px;
+	.good-bal{
+		color: #75ff75;
 	}
-
-	a {
-		text-decoration: none;
-		padding: 1em 0.5em;
-		display: block;
+	.bad-bal{
+		color: rgb(255, 108, 108);
 	}
-	.flex-row{
-		justify-content: space-between;
-		align-items: center;
+	.approval-good{
+		color: rgb(192, 192, 192);
 	}
 </style>
 
-<nav class="flex-row">
-	<ul>
-		<li><a aria-current="{segment === undefined ? 'page' : undefined}" href=".">home</a></li>
-		<li><a aria-current="{segment === 'about' ? 'page' : undefined}" href="about">winners</a></li>
-	</ul>
-
+<nav class="flex-col">
 	{#if lwc}
-		{#if $userAccount} 
-			<p>{$userAccount}</p>
-			<p>{$currency}</p>
-			<p>{$approvalAmount}</p>
+		{#if $userAccount && !$walletInfo.locked} 
+			<p 	class="account">
+				account 
+				<a href={`${config.blockExplorer}/addresses/${$userAccount}`} target="_blank" rel="noopener noreferrer">{$userAccount}</a>
+			</p>
+			<p 	class="currency" 
+				class:good-bal={$currency >= totalCost}
+				class:bad-bal={$currency < totalCost}
+				> {`${$currency} ${config.currencySymbol}`}</p>
+			<p 	class:approval-good={$approvalAmount >= config.cost}
+				class:bad-bal={$approvalAmount < config.cost}> 
+			{`(approval ${$approvalAmount} ${config.currencySymbol})`}
+			</p>
 		{:else}
 			<WalletConnectButton {lwc}/>
 		{/if}

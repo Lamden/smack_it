@@ -13,7 +13,8 @@
     "lamden-js": "^1.21.0",
     "lamden_wallet_controller": "^0.5.0",
     "polka": "next",
-    "sirv": "^1.0.0"
+    "sirv": "^1.0.0",
+    "svelte-spinkit": "^1.0.3"
   },
   "devDependencies": {
     "sapper": "^0.28.0",
