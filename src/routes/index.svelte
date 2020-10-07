@@ -191,7 +191,7 @@
 	
 	
 	<CurrentPot />
-	<p class="subtitle"><strong>100%</strong> community driven. <strong>0%</strong> house edge.</p>
+	<p class="subtitle"><strong>100%</strong> of the POT goes to the WINNER!
 
 	<div class="flex-col button-box">
 		<BigRedButton  on:click={handleClick}>
