@@ -1,8 +1,8 @@
 {
 	"background_color": "#ffffff",
 	"theme_color": "#333333",
-	"name": "TODO",
-	"short_name": "Smack That",
+	"name": "Smack That!",
+	"short_name": "Smack That!",
 	"display": "minimal-ui",
 	"start_url": "/",
 	"icons": [
