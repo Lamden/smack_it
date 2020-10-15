@@ -10,7 +10,7 @@
     let supply
 
     $: sharePer = !supply || !devRewards ? 0 : parseFloat(($smackeroos / supply)*100).toFixed(2)
-    $: worthInTAU = !supply || !devRewards ? 0 : parseFloat(devRewards * sharePer).toFixed(8)
+    $: worthInTAU = !supply || !devRewards ? 0 : parseFloat(devRewards * sharePer).toFixed(4)
 
     onMount(() => {
         let timer;
@@ -78,10 +78,10 @@
 </style>
 
 <div class="flex-col">
-	<h3>You have <strong>{$smackeroos ? parseFloat($smackeroos).toFixed(8) : 0 } SMACKEROOS!</strong></h3>
+	<h3>You have <strong>{$smackeroos ? parseFloat($smackeroos).toFixed(4) : 0 } SMACKEROOS!</strong></h3>
     <p>Each LOSS mints you SMACKEROOS which you can redeem for a share in the developer rewards.</p>
-    <p>Dev Pool Total: {devRewards} {config.currencySymbol}</p>
-    <p>SMACKEROOS Supply: {supply} Your Share: {sharePer}% ({worthInTAU} {config.currencySymbol})</p>
+    <p>Dev Pool Total: {parseFloat(devRewards).toFixed(4)} {config.currencySymbol}</p>
+    <p>SMACKEROOS Supply: {parseFloat(supply).toFixed(4)} Your Share: {sharePer}% ({worthInTAU} {config.currencySymbol})</p>
     <div class="flex-row">
         <button class="close" on:click={() => closeModal()}>close</button> 
         <button on:click={handleRedeemClick}>redeem</button>

@@ -14,7 +14,7 @@
 	let audio = {win, lose}
 	const messageDefault = "SMACK<br />ME"
 	let message = messageDefault
-	let bet;
+	let bet = config.minBet;
 	$: maxBet = Math.floor($currentPot * 0.08)
 
 	onMount(() => {
@@ -83,7 +83,10 @@
 	}
 	const handleBetChange = () => {
 		if (bet > maxBet) setBetValues (parseInt(maxBet))
-		else setBetValues(parseInt(bet))
+		else {
+			if (bet < config.minBet) setBetValues (parseInt(config.minBet))
+			else setBetValues(parseInt(bet))
+		}
 	}
 	const setBetValues = (value) => {
 		bet = parseInt(value)

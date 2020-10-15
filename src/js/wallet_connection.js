@@ -3,7 +3,7 @@ import { config } from './config.js'
 
 const approvalRequest = {
     appName: 'Smack That!',
-    version: '0.5.0',
+    version: '0.5.2',
     contractName: config.smartcontact,
     networkType: config.networkType
 }

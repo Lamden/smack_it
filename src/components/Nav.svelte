@@ -86,7 +86,7 @@
 				</span>
 			</div>
 			<p class="smackeroos" on:click={handleSmakeroosClick}>
-				{`SMACKEROOS ${parseFloat($smackeroos).toFixed(8)}`}
+				{`SMACKEROOS ${parseFloat($smackeroos).toFixed(4)}`}
 			</p>
 
 		{:else}
