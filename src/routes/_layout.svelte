@@ -3,11 +3,11 @@
 	import WalletController from 'lamden_wallet_controller';
 
 	//Stores
-	import { walletInstalled, walletInfo, userAccount, autoTx, showModal, approvalAmount, currency, sending } from '../js/stores.js';
+	import { walletInstalled, walletInfo, userAccount, autoTx, showModal, approvalAmount, currency, sending, currentBet, maxSmackStamps } from '../js/stores.js';
 
 	//Utils
 	import { approvalRequest } from '../js/wallet_connection';
-	import { checkForApproval, refreshTAUBalance } from '../js/utils'
+	import { checkForApproval, refreshTAUBalance, getSmackeroos } from '../js/utils'
 	import { config } from '../js/config'
 
 	//components
@@ -38,7 +38,10 @@
 				})
 
 		// Get stamp costs for the methods we will call
-		fetch(`${config.blockExplorer}/api/stamps/${config.smartcontact}/smack`).then(res => res.json()).then(json => stampLimits.smack = json)
+		fetch(`${config.blockExplorer}/api/stamps/${config.smartcontact}/smack`).then(res => res.json()).then(json => {
+			stampLimits.smack = json
+			maxSmackStamps.set(json.max)
+			})
 		fetch(`${config.blockExplorer}/api/stamps/currency/approve`).then(res => res.json()).then(json => stampLimits.approve = json)
 
 		return () => {
@@ -52,20 +55,22 @@
 		userAccount.set(lwc.walletAddress)
 		walletInfo.set(info)
 
-		userHasFunds();
+		userHasFunds($currentBet)
 	}
 
-	function userHasFunds() {
+	function userHasFunds(bet_amount) {
 		return new Promise((resolver) => {
 			if ($userAccount){
+				getSmackeroos()
 				refreshTAUBalance().then(res => {
-					if(res < config.cost) {
+					console.log(res < (bet_amount + ($maxSmackStamps / config.currentStampRatio)))
+					if(res < (bet_amount + ($maxSmackStamps / config.currentStampRatio))) {
 						showModal.set({modalData: {modal: "FundAccount"}, show: true})
 						return resolver(false)
 					}
 					else{
 						checkForApproval().then(res => {
-							if($approvalAmount < config.cost ) {
+							if($approvalAmount < bet_amount ) {
 								showModal.set({modalData: {modal: "SendApproval"}, show: true})
 								return resolver(false)
 							}
@@ -80,15 +85,26 @@
 
 	const handleTxResults = (detail) => {
 		let txResults = detail.data
-		if (txResults.errors){
-			if (txResults.errors.length > 0) errors = txResults.errors
-		}else{
-			errors = [];
+		if (txResults.resultInfo){
+			if (txResults.resultInfo.type === "error"){
+				errors = [txResults.resultInfo.title, ...txResults.resultInfo.errorInfo]
+				return
+			}
 		}
+		if (txResults.errors){
+			if(txResults.errors[0] === "User closed Popup window") {
+				sending.update(value => value - 1)
+				return
+			}
+			if (txResults.errors.length > 0) errors = txResults.errors
+			return
+		}
+		errors = [];
 	}
 
 	function sendTransaction (transaction, callback){
-		transaction.stampLimit = stampLimits[transaction.methodName].max + 5
+		transaction.stampLimit = stampLimits[transaction.methodName].max + 10
+		//transaction.stampLimit = 80
 		sending.update(value => value + 1)
 		lwc.sendTransaction(transaction, callback)
 	}
@@ -104,6 +120,7 @@
 	p{
 		color: red;
 		text-align: center;
+		margin: 0 0 0.25rem;
 	}
 </style>
 

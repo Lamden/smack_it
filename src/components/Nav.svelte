@@ -1,12 +1,14 @@
 <script>
 	import WalletConnectButton from './WalletConnectButton.svelte'
 
-	import { currency, userAccount, approvalAmount, walletInfo } from '../js/stores'
+	import { currency, userAccount, approvalAmount, walletInfo, smackeroos, currentBet, showModal  } from '../js/stores'
 	import { config } from '../js/config'
 	
 	export let lwc;
 
-	let totalCost = config.cost + config.txFee
+	const handleSmakeroosClick = () => {
+		showModal.set({modalData: {modal: "SmackeroosInfo"}, show: true})
+	}
 </script>
 
 <style>
@@ -30,7 +32,7 @@
 	}
 	.account{
 		min-width: 200px;
-		max-width: 300px;
+		max-width: 200px;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -45,7 +47,17 @@
 		color: rgb(255, 108, 108);
 	}
 	.approval-good{
-		color: rgb(192, 192, 192);
+		color: #b6ffb6;
+	}
+	.smackeroos{
+		color: rgb(95, 202, 238);
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.smackeroos:hover{
+		color: rgb(255, 0, 255);
+		text-decoration: none;
 	}
 
 	@media (min-width: 480px) {
@@ -59,17 +71,24 @@
 	{#if lwc}
 		{#if $userAccount && !$walletInfo.locked} 
 			<p 	class="account">
-				account 
+				Wallet Account 
 				<a href={`${config.blockExplorer}/addresses/${$userAccount}`} target="_blank" rel="noopener noreferrer">{$userAccount}</a>
 			</p>
-			<p 	class="currency" 
-				class:good-bal={$currency >= totalCost}
-				class:bad-bal={$currency < totalCost}
-				> {`${$currency} ${config.currencySymbol}`}</p>
-			<p 	class:approval-good={$approvalAmount >= config.cost}
-				class:bad-bal={$approvalAmount < config.cost}> 
-			{`(approval ${$approvalAmount} ${config.currencySymbol})`}
+			<div>
+				<span class="currency" 
+						class:good-bal={$currency >= $currentBet}
+						class:bad-bal={$currency < $currentBet}> 
+						{`${parseFloat($currency).toFixed(2)} ${config.currencySymbol}`}
+				</span>
+				<span 	class:approval-good={$approvalAmount >= $currentBet}
+						class:bad-bal={$approvalAmount < $currentBet}> 
+						{`(${$approvalAmount} approved)`}
+				</span>
+			</div>
+			<p class="smackeroos" on:click={handleSmakeroosClick}>
+				{`SMACKEROOS ${parseFloat($smackeroos).toFixed(8)}`}
 			</p>
+
 		{:else}
 			<WalletConnectButton {lwc}/>
 		{/if}

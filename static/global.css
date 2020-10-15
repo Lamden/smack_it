@@ -39,7 +39,7 @@ a:visited {
 	flex-direction: row;
 }
 
-input[type="submit"] {
+button, input[type="submit"] {
 	box-shadow: 0px 1px 0px 0px #fff6af;
 	background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
 	background-color:#ffec64;
@@ -56,15 +56,15 @@ input[type="submit"] {
 	text-shadow:0px 1px 0px #ffee66;
 	height: 45px;
 }
-input[type="submit"]:disabled{
+button:disabled, input[type="submit"]:disabled{
 	background: linear-gradient(to bottom, #ff5bb07d 5%, #ef027d7d 100%);
 	color: #e8e8e8;
 }
-input[type="submit"]:hover {
+button:hover, input[type="submit"]:hover {
 	background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
 	background-color:#ffab23;
 }
-input[type="submit"]:active {
+button:active, input[type="submit"]:active {
 	position:relative;
 	top:1px;
 }

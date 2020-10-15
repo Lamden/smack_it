@@ -1,11 +1,11 @@
 <script>
+	import { onMount } from 'svelte'
 	import BigRedButton from '../components/BigRedButton.svelte'
 	import Spinner from '../components/Spinner.svelte';
-	import CurrentPot from '../components/CurrentPot.svelte';
 
 	import { getContext } from 'svelte'
-	import { showModal, sending, currency, approvalAmount  } from '../js/stores.js'
-	import { checkForApproval, closeModal } from '../js/utils.js'
+	import { showModal, sending, currency, approvalAmount, currentPot, currentBet  } from '../js/stores.js'
+	import { checkForApproval, closeModal, refreshCurrentPot } from '../js/utils.js'
 	import { config } from '../js/config.js'
 	import { approvalRequest } from '../js/wallet_connection';
 
@@ -14,24 +14,28 @@
 	let audio = {win, lose}
 	const messageDefault = "SMACK<br />ME"
 	let message = messageDefault
-	$: spinsLeft = calcSpinsLeft($currency, $approvalAmount)
+	let bet;
+	$: maxBet = Math.floor($currentPot * 0.08)
 
-	const calcSpinsLeft = (curr, approval) => {
-		if (approval <= curr){
-			if (approval < config.cost) return 0;
-			else return Math.floor(approval / config.cost)
-		}else{
-			if (curr < config.cost) return 0;
-			else return Math.floor(curr / config.cost)	
-		}
-	}
+	onMount(() => {
+		bet = localStorage.getItem('last_bet') ? localStorage.getItem('last_bet') : 1
+		setBetValues(bet)
+		let timer;
+		refreshCurrentPot().then(() => {
+			timer = setInterval(refreshCurrentPot, 1000)
+		})
+
+		return () => timer = null
+	})
 
 	const smack = () => {
 		if (message === messageDefault){
 			const transaction = {
 				methodName: 'smack',
 				networkType: approvalRequest.networkType,
-				kwargs: {}
+				kwargs: {
+					"bet_amount": parseInt(bet)
+				}
 			}
 			sendTransaction(transaction, handleSmack)
 		}
@@ -42,12 +46,15 @@
 		sending.update(value => value - 1)
 		if (!txResults.errors){
 			if (txResults.txBlockResult.status === 0) {
-				if(txResults.txBlockResult.result === "None") {
+				let smackResult = JSON.parse(txResults.txBlockResult.result.replaceAll("'", "\""))
+				localStorage.setItem('last_bet', smackResult.bet);
+				refreshCurrentPot();
+				if( smackResult.status === 0) {
 					setButtonMessage('NOPE', 3000)
 					play('lose')
 				}
 				else {
-					setButtonMessage(`WINNER!<br />${txResults.txBlockResult.result} TAU`, 7300)
+					setButtonMessage(`WINNER!<br />${smackResult.won} TAU`, 7300)
 					play('win')
 				}
 			}
@@ -66,13 +73,26 @@
 	}
 
 	const handleClick = () => {
-		userHasFunds().then(res => {
+		userHasFunds(bet).then(res => {
 			if (res)  smack()
 			else {
 				setButtonMessage("NO FUNDS", 2000)
 				play("broke")
 			}
 		})
+	}
+	const handleBetChange = () => {
+		if (bet > maxBet) setBetValues (parseInt(maxBet))
+		else setBetValues(parseInt(bet))
+	}
+	const setBetValues = (value) => {
+		bet = parseInt(value)
+		localStorage.setItem('last_bet', parseInt(value))
+		currentBet.set(value)
+	}
+	const handleMaxBet = () => {
+		bet = maxBet
+		currentBet.set(maxBet)
 	}
 </script>
 
@@ -97,6 +117,7 @@
 
 	.subtitle{
 		font-size: 0.8em;
+		color: rgb(122, 122, 122);
 	}
 
 	.flex-col{
@@ -131,13 +152,50 @@
 		animation-play-state: running;
 	}
 
+	.win{
+		color: yellowgreen;
+	}
+
+	.pay{
+		color: yellow;
+	}
+	.costs{
+		font-size: 1.3em;
+	}
+
+	input[type="number"]{
+		padding: 2px 0 2px 4px;
+		height: 30px;
+		width: 75px;
+		position: relative;
+		top: -2px;
+		background: transparent;
+		border: 1px solid yellow;
+		color: yellow;
+		font-weight: bolder;
+		font-size: smaller;
+		border-radius: 2px;
+		margin-left: 2px;
+	}
+
+	input[type="number"]:focus{
+		 outline: none;
+	}
+
+	input[type="number"]::-webkit-outer-spin-button,
+	input[type="number"]::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	button{
+		height: 37px;
+		margin-top: 1rem;
+	}
+
 	@keyframes flash {
 		from {color: yellow;}
 		to {color: rgb(81, 255, 0);}
-	}
-
-	.fees{
-		color: rgb(122, 122, 122);
 	}
 
 	@media (min-width: 480px) {
@@ -190,8 +248,12 @@
 <div class="flex-col">
 	
 	
-	<CurrentPot />
-	<p class="subtitle"><strong>100%</strong> of the POT goes to the WINNER!
+	<p class="costs">Pay 
+		<input type="number" bind:value={bet} min="1" step="1" pattern="\d*" on:change={handleBetChange}/>
+		<strong class="pay">{config.currencySymbol} </strong>
+		 to <strong>WIN </strong><strong class="win"> {bet * 2} {config.currencySymbol}</strong> </p>
+	<button on:click={handleMaxBet} > BET MAX {maxBet} {config.currencySymbol}</button>
+	
 
 	<div class="flex-col button-box">
 		<BigRedButton  on:click={handleClick}>
@@ -201,9 +263,8 @@
 				<p class="button-message" class:winner={message.includes("WINNER")}>{@html message}</p>
 			{/if}
 		</BigRedButton>
-		<h2>Smacks Available {spinsLeft}</h2>
-		<p class="fees subtitle"><strong>{`${config.cost} ${config.currencySymbol} + tx fees `}</strong> per smack.</p>
-
+		<h2>Current Pot {$currentPot} {config.currencySymbol}</h2>
+		<p class="subtitle">48% chance to double your bet (max bet: 8% of POT) </p>
 	</div>
 </div>
 

@@ -34,7 +34,7 @@
 </script>
 
 <style>
-    button {
+    a, button {
         box-shadow: 0px 1px 0px 0px #fff6af;
         background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
         background-color:#ffec64;
@@ -49,17 +49,17 @@
         padding:6px 24px;
         text-decoration:none;
         text-shadow:0px 1px 0px #ffee66;
-        height: 45px;
+        height: 37px;
     }
     button:disabled{
         background: linear-gradient(to bottom, #ff5bb07d 5%, #ef027d7d 100%);
         color: #e8e8e8;
     }
-    button:hover {
+    a, button:hover {
         background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
         background-color:#ffab23;
     }
-    button:active {
+    a, button:active {
         position:relative;
         top:1px;
     }
@@ -70,7 +70,7 @@
 {#if !installed}
     <a href="https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim"
        target="_blank"
-       rel="noopener noreferrer">Install Wallet</a>
+       rel="noopener noreferrer">Install Lamden Wallet</a>
 {:else}
      {#if locked}
         <button on:click={() => location.reload()}>Wallet Locked</button>

@@ -3,9 +3,9 @@ import { config } from './config.js'
 
 const approvalRequest = {
     appName: 'Smack That!',
-    version: '0.0.1',
+    version: '0.5.0',
     contractName: config.smartcontact,
-    networkType: 'mainnet'
+    networkType: config.networkType
 }
 
 approvalRequest.logo = 'logo-192.png'

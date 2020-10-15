@@ -6,8 +6,9 @@
 
     import SendApproval from './SendApproval.svelte'
     import FundAccount from './FundAccount.svelte'
+    import SmackeroosInfo from './SmackeroosInfo.svelte'
     
-    const modals = { SendApproval, FundAccount }
+    const modals = { SendApproval, FundAccount, SmackeroosInfo }
 
 
     let show = false;
@@ -16,6 +17,7 @@
     $: currentModal = modals[currentModalName]
 
     const changeModal = (info) => {
+        console.log(info)
         if (!info.show && show) {
             closeModal()
             return
@@ -35,9 +37,13 @@
     }
     
     const changeToNew = async (modalName) => {
+            console.log('changing?')
+            console.log(modals[$showModal.modalData.modal])
             await tick()
-            currentModalName = modals[$showModal.modalData.modal]
+            currentModalName = $showModal.modalData.modal
+            console.log(currentModal)
             show = true
+            
     }
 
     const closeModal = () => {
