@@ -10,7 +10,7 @@
     let supply
 
     $: sharePer = !supply || !devRewards ? 0 : parseFloat(($smackeroos / supply)*100).toFixed(2)
-    $: worthInTAU = !supply || !devRewards ? 0 : parseFloat(devRewards * sharePer).toFixed(4)
+    $: worthInTAU = !supply || !devRewards ? 0 : parseFloat((devRewards * sharePer)/100).toFixed(4)
 
     onMount(() => {
         let timer;

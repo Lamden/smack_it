@@ -267,7 +267,7 @@
 			{/if}
 		</BigRedButton>
 		<h2>Current Pot {$currentPot} {config.currencySymbol}</h2>
-		<p class="subtitle">48% chance to double your bet (max bet: 8% of POT) </p>
+		<p class="subtitle">45% chance to double your bet (max bet: 8% of POT) </p>
 	</div>
 </div>
 
